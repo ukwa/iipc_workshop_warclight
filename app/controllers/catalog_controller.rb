@@ -21,6 +21,7 @@ class CatalogController < ApplicationController
 
     # solr field configuration for search results/index views
     config.index.title_field = ['title', 'resourcename']
+    config.index.thumbnail_method = :thumbnail_image
 
     # solr fields that will be treated as facets by the blacklight application
     # The ordering of the field names is the order of the display
