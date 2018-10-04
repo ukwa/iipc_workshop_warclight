@@ -16,6 +16,7 @@ RUN bundle install
 COPY . .
 
 RUN bundle exec rails db:migrate RAILS_ENV=development
+RUN RAILS_ENV=development rake assets:precompile
 
 EXPOSE 3000
 
