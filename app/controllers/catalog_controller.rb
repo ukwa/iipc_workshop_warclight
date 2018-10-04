@@ -117,12 +117,35 @@ class CatalogController < ApplicationController
     # This one uses all the defaults set by the solr request handler. Which
     # solr request handler? The one set in config[:default_solr_parameters][:qt],
     # since we aren't specifying it otherwise.
-    config.add_search_field 'text', label: 'Text' do |field|
+    config.add_search_field 'text', label: 'All Text' do |field|
       field.include_in_simple_select = true
     end
 
     # Field-based searches. We have registered handlers in the Solr configuration
     # so we have Blacklight use the `qt` parameter to invoke them
+
+    config.add_search_field 'title', label: 'Title' do |field|
+      # solr_parameters hash are sent to Solr as ordinary url query params.
+      field.solr_parameters = { :'df' => 'title' }
+
+      # :solr_local_parameters will be sent using Solr LocalParams
+      # syntax, as eg {! qf=$title_qf }. This is neccesary to use
+      # Solr parameter de-referencing like $title_qf.
+      # See: http://wiki.apache.org/solr/LocalParams
+      #field.solr_local_parameters = {
+      #  qf: '$title_qf',
+      #  pf: '$title_pf'
+      #}
+
+    end
+
+    config.add_search_field 'url', label: 'URL (exact match)' do |field|
+      field.solr_parameters = { :'df' => 'url' }
+    end
+
+    config.add_search_field 'host', label: 'Host (exact match)' do |field|
+      field.solr_parameters = { :'df' => 'host' }
+    end
 
     # "sort results by" select (pulldown)
     # label in pulldown is followed by the name of the SOLR field to sort by and
