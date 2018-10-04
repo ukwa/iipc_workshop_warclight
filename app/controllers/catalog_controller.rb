@@ -121,22 +121,6 @@ class CatalogController < ApplicationController
       field.include_in_simple_select = true
     end
 
-    config.add_search_field 'title', label: 'Title' do |field|
-      field.qt = 'title_search'
-    end
-
-    config.add_search_field 'content', label: 'Content' do |field|
-      field.qt = 'content_search'
-    end
-
-    config.add_search_field 'url', label: 'URL' do |field|
-      field.qt = 'url_search'
-    end
-
-    config.add_search_field 'host', label: 'Host' do |field|
-      field.qt = 'host_search'
-    end
-
     # Field-based searches. We have registered handlers in the Solr configuration
     # so we have Blacklight use the `qt` parameter to invoke them
 
