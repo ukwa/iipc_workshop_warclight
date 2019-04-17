@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CatalogController < ApplicationController
+
+  include BlacklightRangeLimit::ControllerOverride
   include Blacklight::Catalog
   include Warclight::Catalog
 
@@ -24,7 +26,6 @@ class CatalogController < ApplicationController
 
     # solr field configuration for search results/index views
     config.index.title_field = ['title', 'resourcename']
-    config.index.thumbnail_method = :thumbnail_image
 
     # solr fields that will be treated as facets by the blacklight application
     # The ordering of the field names is the order of the display
@@ -121,31 +122,20 @@ class CatalogController < ApplicationController
       field.include_in_simple_select = true
     end
 
+    config.add_search_field 'title', label: 'Title' do |field|
+      field.solr_parameters = { 'qf': 'title' }
+    end
+
+    config.add_search_field 'url', label: 'URL' do |field|
+      field.solr_parameters = { 'qf': 'url' }
+    end
+
+    config.add_search_field 'host', label: 'Host' do |field|
+      field.solr_parameters = { 'qf': 'host' }
+    end
+
     # Field-based searches. We have registered handlers in the Solr configuration
     # so we have Blacklight use the `qt` parameter to invoke them
-
-    config.add_search_field 'title', label: 'Title' do |field|
-      # solr_parameters hash are sent to Solr as ordinary url query params.
-      field.solr_parameters = { :'df' => 'title' }
-
-      # :solr_local_parameters will be sent using Solr LocalParams
-      # syntax, as eg {! qf=$title_qf }. This is neccesary to use
-      # Solr parameter de-referencing like $title_qf.
-      # See: http://wiki.apache.org/solr/LocalParams
-      #field.solr_local_parameters = {
-      #  qf: '$title_qf',
-      #  pf: '$title_pf'
-      #}
-
-    end
-
-    config.add_search_field 'url', label: 'URL (exact match)' do |field|
-      field.solr_parameters = { :'df' => 'url' }
-    end
-
-    config.add_search_field 'host', label: 'Host (exact match)' do |field|
-      field.solr_parameters = { :'df' => 'host' }
-    end
 
     # "sort results by" select (pulldown)
     # label in pulldown is followed by the name of the SOLR field to sort by and

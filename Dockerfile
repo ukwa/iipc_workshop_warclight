@@ -1,4 +1,4 @@
-FROM ruby:2.4.4
+FROM ruby:2.5.3
 
 RUN gem install rails -v 5
 
